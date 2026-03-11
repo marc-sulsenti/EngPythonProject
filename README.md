@@ -9,7 +9,7 @@ _Project for CPE-551 | Engingeering Programming: Python course._
 |------|--------|-------------|
 | **Miguel Rodriguez** | [mrodri12@stevens.edu](mailto:mrodri12@stevens.edu) | 20010380 |
 | **Marc Sulsenti** | [msulsent@stevens.edu](mailto:msulsent@stevens.edu) | — |
-| **Max Ruiz** | [mruiz1@stevens.edu](mailto:mruiz1@stevens.edu) | — |
+| **Max Ruiz** | [mruiz1@stevens.edu](mailto:mruiz1@stevens.edu) | 10475995 |
 
 ---
 
