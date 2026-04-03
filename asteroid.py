@@ -1,0 +1,1 @@
+# Asteroid class of one single near Earth object
