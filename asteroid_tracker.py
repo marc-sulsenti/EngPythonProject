@@ -1,0 +1,1 @@
+# Class that will manage a collection of near earth objects.
