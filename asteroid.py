@@ -59,8 +59,10 @@ class Asteroid:
         """
         avg_diameter = (self.diameter_min + self.diameter_max) / 2
         risk_category = self.get_risk_category()
+        risk_score = self.calculate_risk_score()
         return (f"Asteroid {self.name} | {avg_diameter:.0f}m | "
-                f"{self.miss_distance/1_000_000:.1f}M km | Risk: {risk_category}")
+                f"{self.miss_distance/1_000_000:.1f}M km | "
+                f"Risk: {risk_score:.1f}/100 ({risk_category})")
     
     def __gt__(self, other):
         """
@@ -99,3 +101,25 @@ def load_asteroids_from_data_file():
                 asteroids.append(asteroid)
     
     return asteroids
+
+if __name__ == "__main__":
+    try:
+        asteroids = load_asteroids_from_data_file()
+        
+        if not asteroids:
+            print("No asteroids found in data file.")
+        else:
+            asteroids.sort(reverse=True)
+            
+            print(f"Loaded {len(asteroids)} asteroid approaches from data/data.json\n")
+            print("=== TOP 5 MOST RISKY ASTEROIDS ===\n")
+            
+            for i, asteroid in enumerate(asteroids[:5], 1):
+                print(f"{i}. {asteroid}")
+                print(f"   Risk Score: {asteroid.calculate_risk_score():.1f}/100")
+                print(f"   Hazardous: {'Yes' if asteroid.is_hazardous else 'No'}")
+                print(f"   Velocity: {asteroid.velocity:,.0f} km/h")
+                print()
+                
+    except FileNotFoundError as e:
+        print(f"Error: {e}")
