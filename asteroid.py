@@ -38,7 +38,7 @@ class Asteroid:
         
         def get_risk_category(self):
             """
-            Categorize risk score into severity levels.
+            Categorizes risk score into severity levels
             
             Returns:
                 str: 'Extreme' (80-100), 'High' (60-79), 'Medium' (40-59), 'Low' (0-39)
@@ -54,8 +54,48 @@ class Asteroid:
                 return 'Low'
         
         def __str__(self):
-            """Return readable asteroid summary."""
+            """
+            Returns readable asteroid summary.
+            """
             avg_diameter = (self.diameter_min + self.diameter_max) / 2
             risk_category = self.get_risk_category()
             return (f"Asteroid {self.name} | {avg_diameter:.0f}m | "
                     f"{self.miss_distance/1_000_000:.1f}M km | Risk: {risk_category}")
+        
+        def __gt__(self, other):
+            """
+            Compares two asteroids by risk score
+            
+            Args:
+                other (Asteroid): Another asteroid instance
+                
+            Returns:
+                bool: True if this asteroid has higher risk than other
+            """
+            if not isinstance(other, Asteroid):
+                return NotImplemented
+            return self.calculate_risk_score() > other.calculate_risk_score()
+
+        def load_asteroids_from_data_file():
+            """
+            Loads asteroid data from the JSON file created by get_data.py
+            
+            Returns:
+                list: List of Asteroid objects for all close approaches
+            """
+            data_path = Path('data/data.json')
+            
+            if not data_path.exists():
+                raise FileNotFoundError(f"No data file found at {data_path}. Run get_data.py first.")
+            
+            with open(data_path, 'r') as f:
+                nasa_data = json.load(f)
+            
+            asteroids = []
+            for date, neo_list in nasa_data.items():
+                for neo in neo_list:
+                    for approach in neo.get('close_approach_data', []):
+                        asteroid = Asteroid(neo, approach)
+                        asteroids.append(asteroid)
+            
+            return asteroids
