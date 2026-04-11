@@ -7,20 +7,24 @@ class Asteroid:
     Represents a near-earth object from NASA's NEO API
     Stores key properties and provides risk assessment methods
     """
-    def __init__(self, neo_data, close_approach_data):
+    def __init__(self, name, diameter_min, diameter_max, velocity, miss_distance, is_hazardous, close_approach_date):
         """
-        Initializes Asteroid from NASA NEO API data
         Args:
-            neo_data (dict): The asteroid's entry from NASA's near_earth_objects
-            close_approach_data (dict): The specific close approach data entry
+            name (str): Asteroid name
+            diameter_min (float): Minimum estimated diameter in meters
+            diameter_max (float): Maximum estimated diameter in meters
+            velocity (float): Relative velocity in km/h
+            miss_distance (float): Miss distance in km
+            is_hazardous (bool): NASA's potentially hazardous classification
+            close_approach_date (str): Date of close approach (YYYY-MM-DD)
         """
-        self.name = neo_data.get('name', 'Unknown')  # Extracts asteroid name from data (default to 'Unknown')
-        self.diameter_min = neo_data['estimated_diameter']['meters']['estimated_diameter_min']  # Gets minimum estimated diameter in meters
-        self.diameter_max = neo_data['estimated_diameter']['meters']['estimated_diameter_max']  # Gets maximum estimated diameter in meters
-        self.velocity = float(close_approach_data['relative_velocity']['kilometers_per_hour'])  # Converts relative velocity to float
-        self.miss_distance = float(close_approach_data['miss_distance']['kilometers'])  # Converts miss distance to float
-        self.is_hazardous = neo_data.get('is_potentially_hazardous_asteroid', False)  # Checks if asteroid is potentially hazardous
-        self.close_approach_date = close_approach_data['close_approach_date']  # Gets the date of close approach
+        self.name = name
+        self.diameter_min = diameter_min
+        self.diameter_max = diameter_max
+        self.velocity = velocity
+        self.miss_distance = miss_distance
+        self.is_hazardous = is_hazardous
+        self.close_approach_date = close_approach_date
 
     def calculate_risk_score(self):
         """
