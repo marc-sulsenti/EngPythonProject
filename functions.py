@@ -34,3 +34,27 @@ def get_dataset_bounds(asteroids):
         'velocity': (min(velocities), max(velocities)),
         'miss_distance': (min(distances), max(distances))
     }
+
+def calculate_risk_score(diameter, velocity, miss_distance, is_hazardous=False):
+    '''
+    Calculates a risk score from 0 to 100 for an asteroid based on its size, velocity, and miss distance.
+    Larger diameter, higher velocity, and closer miss distance all increase the score.
+
+    Parameters:
+        diameter: Average estimated diameter in meters.
+        velocity: Relative velocity in km/h.
+        miss_distance: Miss distance in km.
+        is_hazardous: Whether NASA flagged the asteroid as potentially hazardous. Defaults to False.
+
+    Returns:
+        float: Risk score from 0 to 100. Higher means more dangerous.
+    '''
+    # Size contribution: up to 40 points based on diameter relative to 1 km
+
+    # Size is up to 40 points based on the diameter (1km), Distance is up to 35 points (Closer = Higher Score),
+    # Velocity is up to 25 points (Relative to 100,000 km/h), and a bonus of 15 points if NASA flagged it as hazardous. X/100 score.
+    size_score = min(40, (diameter / 1000) * 40)
+    distance_score = max(0, 35 * (1 - min(1, miss_distance / 1_000_000)))
+    velocity_score = min(25, (velocity / 100000) * 25)
+    hazardous_bonus = 15 if is_hazardous else 0
+    return min(100, size_score + distance_score + velocity_score + hazardous_bonus)

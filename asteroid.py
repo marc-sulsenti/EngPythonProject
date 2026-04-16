@@ -1,6 +1,7 @@
 # Asteroid class of one single near Earth object
 import json
 from pathlib import Path 
+from functions import calculate_risk_score as calc_risk
 
 class Asteroid:
     """
@@ -34,11 +35,7 @@ class Asteroid:
             float: Calculated risk score
         """
         avg_diameter = (self.diameter_min + self.diameter_max) / 2  # Computes average diameter
-        size_score = min(40, (avg_diameter / 1000) * 40)  # Calculates size contribution to risk (max 40 points)
-        distance_score = max(0, 35 * (1 - min(1, self.miss_distance / 1_000_000)))  # Calculates distance contribution (max 35 points)
-        velocity_score = min(25, (self.velocity / 100000) * 25)  # Calculates velocity contribution (max 25 points)
-        hazardous_bonus = 15 if self.is_hazardous else 0  # Adds bonus if hazardous
-        return min(100, size_score + distance_score + velocity_score + hazardous_bonus)  # Return total risk score, capped at 100
+        return calc_risk(avg_diameter, self.velocity, self.miss_distance, self.is_hazardous)
     
     def get_risk_category(self):
         """
