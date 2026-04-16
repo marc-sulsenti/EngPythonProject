@@ -76,4 +76,81 @@ class AsteroidTracker:
         # Compute dataset bounds for normalization using the utility function and makes sure that the list if not empty.
         if self.asteroids: 
             self.bounds = get_dataset_bounds(self.asteroids)
-    
+    def __len__(self):
+        '''
+        Returns the number of asteroids in the tracker.
+
+        Returns:
+            int: Total count of Asteroid objects.
+        '''
+        return len(self.asteroids)
+
+    def get_hazardous(self):
+        '''
+        Returns a list of asteroids that NASA classified as potentially hazardous.
+
+        Returns:
+            list: Asteroid objects where is_hazardous is True.
+        '''
+        # Filter the list for only hazardous asteroids by checking the is_hazardous flag.
+        hazardous = []
+        for asteroid in self.asteroids: 
+            if asteroid.is_hazardous:
+                hazardous.append(asteroid)
+        return hazardous
+
+    def get_top_risks(self, n=10):
+        '''
+        Returns the top n riskiest asteroids sorted by risk score descending.
+
+        Parameters:
+            n: Integer of the top-risk asteroids to return. Defaults to 10.
+
+        Returns:
+            list: The n Asteroid objects with the highest risk scores.
+        '''
+        # Sort asteroids by risk score in descending order and return top n
+        sorted_asteroids = sorted(self.asteroids, key=lambda a: a.calculate_risk_score(), reverse=True)
+        return sorted_asteroids[:n]
+
+    def get_summary_stats(self):
+        '''
+        Computes summary statistics across all asteroids in the tracker.
+
+        Returns:
+            dict: Dictionary containing:
+                - 'total_count' (int): Total number of asteroids
+                - 'hazardous_count' (int): Number of NASA-flagged hazardous asteroids
+                - 'mean_risk' (float): Average risk score across all asteroids
+                - 'max_risk' (float): Highest risk score in the dataset
+                - 'min_risk' (float): Lowest risk score in the dataset
+                - 'category_counts' (dict): Count of asteroids in each risk category
+                - 'date_range' (tuple): Earliest and latest close approach dates
+        '''
+        # Check to see if the asteroids list is empty
+        if not self.asteroids: 
+            return {}
+
+        # Compute all risk scores using a list comprehension
+        scores = [a.calculate_risk_score() for a in self.asteroids]
+
+        # Count asteroids in each risk category
+        category_counts = {'Low': 0, 'Medium': 0, 'High': 0, 'Extreme': 0}
+        for asteroid in self.asteroids:
+            category = asteroid.get_risk_category()
+            category_counts[category] += 1
+
+        # Determine the date range from close approach dates
+        dates = [a.close_approach_date for a in self.asteroids]
+        date_range = (min(dates), max(dates))
+
+        # Build and return the summary dictionary
+        return {
+            'total_count': len(self.asteroids),
+            'hazardous_count': len(self.get_hazardous()),
+            'mean_risk': sum(scores) / len(scores),
+            'max_risk': max(scores),
+            'min_risk': min(scores),
+            'category_counts': category_counts,
+            'date_range': date_range
+        }
