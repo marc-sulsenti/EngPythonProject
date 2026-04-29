@@ -1,6 +1,4 @@
 # Asteroid class of one single near Earth object
-import json
-from pathlib import Path 
 from functions import calculate_risk_score as calc_risk
 
 class Asteroid:
@@ -78,49 +76,3 @@ class Asteroid:
         if not isinstance(other, Asteroid):  # Checks if other is an Asteroid instance
             return NotImplemented
         return self.calculate_risk_score() > other.calculate_risk_score()  # Compares risk scores
-
-def load_asteroids_from_data_file():
-    """
-    Loads asteroid data from the JSON file created by get_data.py
-    
-    Returns:
-        list: List of Asteroid objects for all close approaches
-    """
-    data_path = Path('data/data.json')  # Defines path to data file
-    
-    if not data_path.exists():  # Checks if data file exists
-        raise FileNotFoundError(f"No data file found at {data_path}. Run get_data.py first.")
-    
-    with open(data_path, 'r') as f:  # Open the data file for reading
-        nasa_data = json.load(f)  # Load JSON data
-    
-    asteroids = []  # Initialize list for asteroids
-    for date, neo_list in nasa_data.items():  # Iterate over dates and NEO lists
-        for neo in neo_list:  # Iterate over NEOs
-            for approach in neo.get('close_approach_data', []):  # Iterate over close approaches
-                asteroid = Asteroid(neo, approach)  # Create Asteroid instance
-                asteroids.append(asteroid)  # Add to list
-    
-    return asteroids  # Return the list of asteroids
-
-if __name__ == "__main__":
-    try:  # Tries to load and display asteroids
-        asteroids = load_asteroids_from_data_file()  # Loads asteroids from file
-        
-        if not asteroids:  # Checks if any asteroids were loaded
-            print("No asteroids found in data file.")
-        else:  # Processes asteroids if they exist
-            asteroids.sort(reverse=True)  # Sorts by risk score descending
-            
-            print(f"Loaded {len(asteroids)} asteroid approaches from data/data.json\n")  # Prints count
-            print("=== TOP 5 MOST RISKY ASTEROIDS ===\n")  # Prints header
-            
-            for i, asteroid in enumerate(asteroids[:5], 1):  # Iterates over top 5
-                print(f"{i}. {asteroid}")  # Prints asteroid summary
-                print(f"   Risk Score: {asteroid.calculate_risk_score():.1f}/100")  # Prints risk score
-                print(f"   Hazardous: {'Yes' if asteroid.is_hazardous else 'No'}")  # Prints hazardous status
-                print(f"   Velocity: {asteroid.velocity:,.0f} km/h")  # Prints velocity
-                print()  # Prints blank line
-                
-    except FileNotFoundError as e:  # Handles missing file error
-        print(f"Error: {e}")  # Prints error message
