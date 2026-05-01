@@ -1,6 +1,4 @@
 # Asteroid class of one single near Earth object
-import json
-from pathlib import Path 
 from functions import calculate_risk_score as calc_risk
 
 class Asteroid:
@@ -26,44 +24,44 @@ class Asteroid:
         self.miss_distance = miss_distance
         self.is_hazardous = is_hazardous
         self.close_approach_date = close_approach_date
+        self.bounds = None 
 
     def calculate_risk_score(self):
         """
-        Calculates risk score from 0-100 based on size, distance, and velocity
+        Calculates risk score from 0-10 based on size, distance, and velocity
         Higher score indicates higher risk
         Returns:
             float: Calculated risk score
         """
         avg_diameter = (self.diameter_min + self.diameter_max) / 2  # Computes average diameter
-        return calc_risk(avg_diameter, self.velocity, self.miss_distance, self.is_hazardous)
+        return calc_risk(avg_diameter, self.velocity, self.miss_distance, self.bounds)  # Returns risk score
     
     def get_risk_category(self):
         """
         Categorizes risk score into severity levels
         
         Returns:
-            str: 'Extreme' (80-100), 'High' (60-79), 'Medium' (40-59), 'Low' (0-39)
+            str: 'Critical' (7.5-10), 'High' (5.0-7.5), 'Medium' (2.5-5.0), 'Low' (0-2.5)
         """
         score = self.calculate_risk_score()  # Gets the risk score
-        if score >= 80:  # Checks for extreme risk
-            return 'Extreme'
-        elif score >= 60:  # Checks for high risk
+        if score >= 7.5:  # Checks for critical risk
+            return 'Critical'
+        elif score >= 5.0:  # Checks for high risk
             return 'High'
-        elif score >= 40:  # Checks for medium risk
+        elif score >= 2.5:  # Checks for medium risk
             return 'Medium'
         else:  # Determines low risk
             return 'Low'
     
     def __str__(self):
         """
-        Returns readable asteroid summary.
+        This method returns readable asteroid summary.
         """
         avg_diameter = (self.diameter_min + self.diameter_max) / 2  # Calculates average diameter
-        risk_category = self.get_risk_category()  # Gets risk category
         risk_score = self.calculate_risk_score()  # Gets risk score
-        return (f"Asteroid {self.name} | {avg_diameter:.0f}m | "  # Formats the summary string
-                f"{self.miss_distance/1_000_000:.1f}M km | "
-                f"Risk: {risk_score:.1f}/100 ({risk_category})")
+        risk_category = self.get_risk_category()  # Gets risk category
+        return (f"Asteroid {self.name} | Diameter: {avg_diameter:.1f}m | "
+                f"Miss: {self.miss_distance:.1f} km | Risk: {risk_score:.2f} ({risk_category})")  # Formats summary string
     
     def __gt__(self, other):
         """
@@ -78,49 +76,3 @@ class Asteroid:
         if not isinstance(other, Asteroid):  # Checks if other is an Asteroid instance
             return NotImplemented
         return self.calculate_risk_score() > other.calculate_risk_score()  # Compares risk scores
-
-def load_asteroids_from_data_file():
-    """
-    Loads asteroid data from the JSON file created by get_data.py
-    
-    Returns:
-        list: List of Asteroid objects for all close approaches
-    """
-    data_path = Path('data/data.json')  # Defines path to data file
-    
-    if not data_path.exists():  # Checks if data file exists
-        raise FileNotFoundError(f"No data file found at {data_path}. Run get_data.py first.")
-    
-    with open(data_path, 'r') as f:  # Open the data file for reading
-        nasa_data = json.load(f)  # Load JSON data
-    
-    asteroids = []  # Initialize list for asteroids
-    for date, neo_list in nasa_data.items():  # Iterate over dates and NEO lists
-        for neo in neo_list:  # Iterate over NEOs
-            for approach in neo.get('close_approach_data', []):  # Iterate over close approaches
-                asteroid = Asteroid(neo, approach)  # Create Asteroid instance
-                asteroids.append(asteroid)  # Add to list
-    
-    return asteroids  # Return the list of asteroids
-
-if __name__ == "__main__":
-    try:  # Tries to load and display asteroids
-        asteroids = load_asteroids_from_data_file()  # Loads asteroids from file
-        
-        if not asteroids:  # Checks if any asteroids were loaded
-            print("No asteroids found in data file.")
-        else:  # Processes asteroids if they exist
-            asteroids.sort(reverse=True)  # Sorts by risk score descending
-            
-            print(f"Loaded {len(asteroids)} asteroid approaches from data/data.json\n")  # Prints count
-            print("=== TOP 5 MOST RISKY ASTEROIDS ===\n")  # Prints header
-            
-            for i, asteroid in enumerate(asteroids[:5], 1):  # Iterates over top 5
-                print(f"{i}. {asteroid}")  # Prints asteroid summary
-                print(f"   Risk Score: {asteroid.calculate_risk_score():.1f}/100")  # Prints risk score
-                print(f"   Hazardous: {'Yes' if asteroid.is_hazardous else 'No'}")  # Prints hazardous status
-                print(f"   Velocity: {asteroid.velocity:,.0f} km/h")  # Prints velocity
-                print()  # Prints blank line
-                
-    except FileNotFoundError as e:  # Handles missing file error
-        print(f"Error: {e}")  # Prints error message

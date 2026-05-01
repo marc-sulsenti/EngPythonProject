@@ -35,26 +35,25 @@ def get_dataset_bounds(asteroids):
         'miss_distance': (min(distances), max(distances))
     }
 
-def calculate_risk_score(diameter, velocity, miss_distance, is_hazardous=False):
+def calculate_risk_score(diameter, velocity, miss_distance, bounds):
     '''
-    Calculates a risk score from 0 to 100 for an asteroid based on its size, velocity, and miss distance.
+    This method calculates a risk score from 0 to 10 for an asteroid based on its size, velocity, and miss distance.
+    Each value is normalized against the full dataset so scores are relative to all loaded asteroids.
     Larger diameter, higher velocity, and closer miss distance all increase the score.
 
     Parameters:
-        diameter: Average estimated diameter in meters.
-        velocity: Relative velocity in km/h.
-        miss_distance: Miss distance in km.
-        is_hazardous: Whether NASA flagged the asteroid as potentially hazardous. Defaults to False.
+        diameter (float): Average estimated diameter in meters.
+        velocity (float): Relative velocity in km/h.
+        miss_distance (float): Miss distance in km.
+        bounds (dict): A Dictionary with 'diameter', 'velocity', and 'miss_distance' keys, each a (min, max) tuple.
 
     Returns:
-        float: Risk score from 0 to 100. Higher means more dangerous.
+        float: Risk score from 0 to 10. Higher means more dangerous relative to the dataset.
     '''
-    # Size contribution: up to 40 points based on diameter relative to 1 km
-
-    # Size is up to 40 points based on the diameter (1km), Distance is up to 35 points (Closer = Higher Score),
-    # Velocity is up to 25 points (Relative to 100,000 km/h), and a bonus of 15 points if NASA flagged it as hazardous. X/100 score.
-    size_score = min(40, (diameter / 1000) * 40)
-    distance_score = max(0, 35 * (1 - min(1, miss_distance / 1_000_000)))
-    velocity_score = min(25, (velocity / 100000) * 25)
-    hazardous_bonus = 15 if is_hazardous else 0
-    return min(100, size_score + distance_score + velocity_score + hazardous_bonus)
+    # First we are going to normalize the diameter, then the velocity, and then the miss distance
+    norm_diameter = normalize_value(diameter, bounds['diameter'][0], bounds['diameter'][1])
+    norm_velocity = normalize_value(velocity, bounds['velocity'][0], bounds['velocity'][1])
+    norm_distance = normalize_value(miss_distance, bounds['miss_distance'][0], bounds['miss_distance'][1])
+    # We can then use the normalized variable to calculate a risk score
+    # We want to weigh the diameter the most, the velocity the second most, and the miss distance the least, but factor all three in
+    return (0.4 * norm_diameter + 0.3 * norm_velocity + 0.3 * (1 - norm_distance)) * 10
