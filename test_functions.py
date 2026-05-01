@@ -34,27 +34,32 @@ def test_normalize_value():
 def test_calculate_risk_score():
     '''
     This method tests the calculate_risk_score function with known inputs to verify expected outputs.
+    Scores are on a 0-10 scale, normalized against dataset bounds.
     '''
-    # A small, slow, far asteroid should have a low risk score
-    score_low = calculate_risk_score(50, 10000, 50_000_000, False)
-    assert score_low < 20, f"Expected low score, got {score_low}"
 
-    # A large, fast, close asteroid flagged hazardous should score high
-    score_high = calculate_risk_score(1000, 100000, 100_000, True)
-    assert score_high > 80, f"Expected high score, got {score_high}"
+    # First, we need to define the bounds for tesitng.
+    # These will reflect the min and max values we expect to see from the dataset.
+    bounds = {
+        'diameter': (0, 1000),
+        'velocity': (0, 100000),
+        'miss_distance': (0, 50_000_000)
+    }
 
-    # A zero-diameter, zero-velocity, max-distance asteroid should score near 0
-    score_min = calculate_risk_score(0, 0, 10_000_000, False)
+    # The smallest, slowest, farthest asteroid in the dataset should score 0
+    score_min = calculate_risk_score(0, 0, 50_000_000, bounds)
     assert score_min == 0.0, f"Expected 0.0, got {score_min}"
 
-    # Score should never exceed 100
-    score_cap = calculate_risk_score(5000, 500000, 0, True)
-    assert score_cap <= 100, f"Expected <= 100, got {score_cap}"
+    # In this test the asteroids that are the largest, fastest, closest  should score 10
+    score_max = calculate_risk_score(1000, 100000, 0, bounds)
+    assert score_max == 10.0, f"Expected 10.0, got {score_max}"
 
-    # Hazardous bonus should add 15 points
-    score_no_haz = calculate_risk_score(500, 50000, 500_000, False)
-    score_haz = calculate_risk_score(500, 50000, 500_000, True)
-    assert score_haz - score_no_haz == 15, f"Expected 15 point difference, got {score_haz - score_no_haz}"
+    # In these tests  score for these  should always stay within 0-10
+    assert 0.0 <= score_min <= 10.0, f"Score out of range: {score_min}"
+    assert 0.0 <= score_max <= 10.0, f"Score out of range: {score_max}"
+
+    # In these tests a mid-range asteroid should score around 5.0
+    score_mid = calculate_risk_score(500, 50000, 25_000_000, bounds)
+    assert abs(score_mid - 5.0) < 0.01, f"Expected ~5.0, got {score_mid}"
 
     print("All calculate_risk_score test cases have passed.")
 

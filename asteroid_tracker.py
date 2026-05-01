@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 from datetime import datetime
 from asteroid import Asteroid
-from functions import get_dataset_bounds, normalize_value
+from functions import get_dataset_bounds
 
 class AsteroidTracker:
     '''
@@ -73,9 +73,11 @@ class AsteroidTracker:
                 )
                 self.asteroids.append(asteroid)
 
-        # Compute dataset bounds for normalization using the utility function and makes sure that the list if not empty.
-        if self.asteroids: 
+        # Compute dataset bounds and assign them to each asteroid so risk scores are dataset-relative.
+        if self.asteroids:
             self.bounds = get_dataset_bounds(self.asteroids)
+            for asteroid in self.asteroids:
+                asteroid.bounds = self.bounds
     def __len__(self):
         '''
         Returns the number of asteroids in the tracker.
@@ -135,7 +137,7 @@ class AsteroidTracker:
         scores = [a.calculate_risk_score() for a in self.asteroids]
 
         # Count asteroids in each risk category
-        category_counts = {'Low': 0, 'Medium': 0, 'High': 0, 'Extreme': 0}
+        category_counts = {'Low': 0, 'Medium': 0, 'High': 0, 'Critical': 0}
         for asteroid in self.asteroids:
             category = asteroid.get_risk_category()
             category_counts[category] += 1
@@ -191,7 +193,7 @@ class AsteroidTracker:
         # Use filter() with a lambda to select asteroids above the threshold
         return list(filter(lambda a: a.calculate_risk_score() >= threshold, self.asteroids))
 
-    def yield_high_risk(self, threshold=60):
+    def yield_high_risk(self, threshold=6.0):
         '''
         Generator function that yields one asteroid at a time that meet a risk score threshold.
 
@@ -230,13 +232,13 @@ if __name__ == "__main__":
             print(f"  {i}. {asteroid}")
 
         # Demo the lambda function
-        print(f"\nAsteroids With Risk >= 40:")
-        high_risk = tracker.filter_by_risk_threshold(40)
+        print(f"\nAsteroids With Risk >= 4.0:")
+        high_risk = tracker.filter_by_risk_threshold(4.0)
         print(f"  Found {len(high_risk)} asteroids.")
 
         # Demo asteroid generator
-        print(f"\nAsteroids With Risk >= 60:")
-        for asteroid in tracker.yield_high_risk(60):
+        print(f"\nAsteroids With Risk >= 6.0:")
+        for asteroid in tracker.yield_high_risk(6.0):
             print(f"  {asteroid}\n")
 
     except FileNotFoundError as e:
