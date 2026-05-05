@@ -12,7 +12,15 @@ def fetch_asteroid_data():
     The data will be returned as a python dictionary.
     '''
     fpath = 'data/data.json'
-    api_key = os.getenv('NASA_API_KEY')
+    '''
+    When building this project, we used our own NASA API Key, but NASA provides a demo key that can be used, but is limited in requests.
+    Since others will not have our API key, the code will fall back to using the demo key allowing this file to be tested.
+    '''
+    api_key = os.getenv('NASA_API_KEY', 'DEMO_KEY')
+    if api_key == 'DEMO_KEY':
+        print("No API key found, using DEMO_KEY.")
+    else:
+        print("Using personal NASA API key.") 
     url = f'https://api.nasa.gov/neo/rest/v1/feed?api_key={api_key}'
     # fetch data from NEO API
     res = requests.get(url)
