@@ -8,6 +8,9 @@ sorting, and a summary analysis.
 
 ---
 
+## Github Link
+https://github.com/marc-sulsenti/EngPythonProject
+
 ## Team Members
 
 | Name | Email | Student ID |
@@ -52,7 +55,7 @@ time.
 | Team Member | Main Contributions |
 |-------------|-------------------|
 | **Miguel Rodriguez** | Helped construct the `Main.ipynb` and constructed most of the AsteroidTracker class alongside any of the helper functions that are associated with it. I also implemented in the `calculate_risk_score()` function in the asteroid.py file. |
-| **Marc Sulsenti** | ... |
+| **Marc Sulsenti** | Set up the initial project structure and repo. Built `get_data`.py and integrated the NASA NeoWs API. Wrote the normalization and bounding utility functions in `functions.py`, along with the unit tests. Refactored the Asteroid class and risk scoring system to use a normalized 0-10 scale. |
 | **Max Ruiz** | Developed Asteroid class along with its essential functions `calculate_risk_score()`, `get_risk_category()`, `__str__()`, and `__gt__()`. I also implemented data visualization and displayed critical information from our data in `Main.ipynb`. |
 
 ## How to Run
