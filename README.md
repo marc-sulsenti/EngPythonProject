@@ -33,7 +33,7 @@ placed into four categories: **Low**, **Medium**, **High**, and **Critical**.
 
 The `AsteroidTracker` class manages the full collection of Asteroids and supports filtering
 by date range or risk threshold, listing top risks, generating
-summary statistics, and a function that can diplay only the high-risk asteroids one at a
+summary statistics, and a function that can display only the high-risk asteroids one at a
 time.
 
 ## Project Structure
