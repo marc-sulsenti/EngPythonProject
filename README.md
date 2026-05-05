@@ -51,9 +51,9 @@ time.
 ## Contributions
 | Team Member | Main Contributions |
 |-------------|-------------------|
-| **Miguel Rodriguez** | Helped construct the Main.ipynb. Constructed most of the AsteroidTracker class alongside any of the helper functions that are associated with it Also implemented in the calculate_risk_score() function in the asteroid.py file. |
+| **Miguel Rodriguez** | Helped construct the `Main.ipynb` and constructed most of the AsteroidTracker class alongside any of the helper functions that are associated with it. I also implemented in the `calculate_risk_score()` function in the asteroid.py file. |
 | **Marc Sulsenti** | ... |
-| **Max Ruiz** | ... |
+| **Max Ruiz** | Developed Asteroid class along with its essential functions `calculate_risk_score()`, `get_risk_category()`, `__str__()`, and `__gt__()`. I also implemented data visualization and displayed critical information from our data in `Main.ipynb`. |
 
 ## How to Run
 
