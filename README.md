@@ -48,6 +48,13 @@ time.
 | [main.ipynb](main.ipynb) | Risk-analysis notebook showcasing the toolkit |
 | [requirements.txt](requirements.txt) | Python dependencies |
 
+## Contributions
+| Team Member | Main Contributions |
+|-------------|-------------------|
+| **Miguel Rodriguez** | Helped construct the Main.ipynb. Constructed most of the AsteroidTracker class alongside any of the helper functions that are associated with it Also implemented in the calculate_risk_score() function in the asteroid.py file. |
+| **Marc Sulsenti** | ... |
+| **Max Ruiz** | ... |
+
 ## How to Run
 
 ### 1. Clone the repository
