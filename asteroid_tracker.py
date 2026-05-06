@@ -127,6 +127,7 @@ class AsteroidTracker:
                 - 'mean_risk' (float): Average risk score across all asteroids
                 - 'max_risk' (float): Highest risk score in the dataset
                 - 'min_risk' (float): Lowest risk score in the dataset
+                - 'max_risk_ceil' (int): Highest risk score rounded up to the nearest integer
                 - 'category_counts' (dict): Count of asteroids in each risk category
                 - 'date_range' (tuple): Earliest and latest close approach dates
         '''
@@ -155,7 +156,7 @@ class AsteroidTracker:
             'mean_risk': sum(scores) / len(scores),
             'max_risk': max(scores),
             'min_risk': min(scores),
-            'max_risk_ceil': math.ceil(max(scores)), 
+            'max_risk_ceil': math.ceil(max(scores)),
             'category_counts': category_counts,
             'date_range': date_range
         }
@@ -201,7 +202,7 @@ class AsteroidTracker:
         Generator function that yields one asteroid at a time that meet a risk score threshold.
 
         Parameters:
-            threshold: Minimum risk score to yield. Defaults to 60.
+            threshold: Minimum risk score to yield. Defaults to 6.0.
 
         Yields:
             Asteroid: Each asteroid whose risk score meets or exceeds the threshold.
@@ -224,9 +225,9 @@ if __name__ == "__main__":
         print(f"  Total Asteroids:  {stats['total_count']}")
         print(f"  Hazardous Asteroids: {stats['hazardous_count']}")
         print(f"  Date Range:       {stats['date_range'][0]} to {stats['date_range'][1]}")
-        print(f"  Mean Risk Score:  {stats['mean_risk']:.1f}/100")
-        print(f"  Max Risk Score:   {stats['max_risk']:.1f}/100")
-        print(f"  Min Risk Score:   {stats['min_risk']:.1f}/100")
+        print(f"  Mean Risk Score:  {stats['mean_risk']:.1f}/10")
+        print(f"  Max Risk Score:   {stats['max_risk']:.1f}/10")
+        print(f"  Min Risk Score:   {stats['min_risk']:.1f}/10")
         print(f"  Category counts:  {stats['category_counts']}\n")
 
         # Display top 5 riskiest asteroids

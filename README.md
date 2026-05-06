@@ -50,12 +50,21 @@ time.
 | [test_functions.py](test_functions.py) | Unit tests for the core functions and class init |
 | [main.ipynb](main.ipynb) | Risk-analysis notebook showcasing the toolkit |
 | [requirements.txt](requirements.txt) | Python dependencies |
+| [data/data.json](data/data.json) | Saved NASA asteroid dataset (committed to repo) |
+
+## Dependencies
+
+- `pandas` — data organization and analysis
+- `matplotlib` — data visualizations
+- `requests` — NASA API calls
+- `python-dotenv` — loading the API key from `.env`
+- `pytest` — running unit tests
 
 ## Contributions
 | Team Member | Main Contributions |
 |-------------|-------------------|
 | **Miguel Rodriguez** | Helped construct the `Main.ipynb` and constructed most of the AsteroidTracker class alongside any of the helper functions that are associated with it. I also implemented in the `calculate_risk_score()` function in the asteroid.py file. |
-| **Marc Sulsenti** | Set up the initial project structure and repo. Built `get_data`.py and integrated the NASA NeoWs API. Wrote the normalization and bounding utility functions in `functions.py`, along with the unit tests. Refactored the Asteroid class and risk scoring system to use a normalized 0-10 scale. |
+| **Marc Sulsenti** | Set up the initial project structure and repo. Built `get_data.py` and integrated the NASA NeoWs API. Wrote the normalization and bounding utility functions in `functions.py`, along with the unit tests. Refactored the Asteroid class and risk scoring system to use a normalized 0-10 scale. |
 | **Max Ruiz** | Developed Asteroid class along with its essential functions `calculate_risk_score()`, `get_risk_category()`, `__str__()`, and `__gt__()`. I also implemented data visualization and displayed critical information from our data in `Main.ipynb`. |
 
 ## How to Run
@@ -63,8 +72,8 @@ time.
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/marc-sulsenti/EngineeringProject.git
-cd EngineeringProject/EngPythonProject
+git clone https://github.com/marc-sulsenti/EngPythonProject.git
+cd EngPythonProject
 ```
 
 ### 2. Install dependencies
@@ -73,22 +82,25 @@ cd EngineeringProject/EngPythonProject
 pip install -r requirements.txt
 ```
 
-### 3. Set up your NASA API key
+### 3. (Optional) Fetch fresh data
 
-Get a free key at [api.nasa.gov](https://api.nasa.gov/) and create a `.env`
-file in the project root:
-
-```
-NASA_API_KEY=your_key_here
-```
-
-### 4. Fetch the asteroid data
+The asteroid dataset is already included as `data/data.json`. The Notebook `main.ipynb` can be run without needing to pull any new dataset. If you want to pull a new dataset, run:
 
 ```bash
 python get_data.py
 ```
 
-This populates `data/data.json` with the next 7 days of close-approach data.
+No API key is needed. The `get_data.py` script falls back to NASA's public Demo Key automatically. If you would like, you could get your own free key from [api.nasa.gov](https://api.nasa.gov/). Once that API key is obtained, you would then create a `.env` file in the project root:
+
+```
+NASA_API_KEY=your_key_here
+```
+
+### 4. Run the tests
+
+```bash
+python -m pytest test_functions.py -v
+```
 
 ### 5. Run the tracker demo
 
@@ -96,10 +108,8 @@ This populates `data/data.json` with the next 7 days of close-approach data.
 python asteroid_tracker.py
 ```
 
-You'll see a summary of the loaded asteroids, the top 5 riskiest, and lists
-filtered by risk threshold.
+You'll see a summary of the loaded asteroids, the top 5 riskiest, and lists filtered by risk threshold.
 
 ### 6. Run the notebook
 
-Open [main.ipynb](main.ipynb) in Jupyter or VS Code for an interactive
-walkthrough of the analysis.
+Open [main.ipynb](main.ipynb) in Jupyter or VS Code for an interactive walkthrough of the analysis.
