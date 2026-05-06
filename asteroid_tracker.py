@@ -113,7 +113,7 @@ class AsteroidTracker:
             list: The n Asteroid objects with the highest risk scores.
         '''
         # Sort asteroids by risk score in descending order and return top n
-        sorted_asteroids = sorted(self.asteroids, key=lambda a: a.calculate_risk_score(), reverse=True)
+        sorted_asteroids = sorted(self.asteroids, reverse=True)
         return sorted_asteroids[:n]
 
     def get_summary_stats(self):
