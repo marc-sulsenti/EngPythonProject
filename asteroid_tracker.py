@@ -1,5 +1,6 @@
 # Class that will manage a collection of near earth objects.
 import json
+import math
 from pathlib import Path
 from datetime import datetime
 from asteroid import Asteroid
@@ -143,8 +144,9 @@ class AsteroidTracker:
             category_counts[category] += 1
 
         # Determine the date range from close approach dates
-        dates = [a.close_approach_date for a in self.asteroids]
-        date_range = (min(dates), max(dates))
+        # Here we will implement the use of a set to collect unique dates
+        unique_dates = {a.close_approach_date for a in self.asteroids} 
+        date_range = (min(unique_dates), max(unique_dates))
 
         # Build and return the summary dictionary
         return {
@@ -153,6 +155,7 @@ class AsteroidTracker:
             'mean_risk': sum(scores) / len(scores),
             'max_risk': max(scores),
             'min_risk': min(scores),
+            'max_risk_ceil': math.ceil(max(scores)), 
             'category_counts': category_counts,
             'date_range': date_range
         }
